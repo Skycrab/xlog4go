@@ -12,6 +12,7 @@ import (
 
 var (
 	LEVEL_FLAGS = [...]string{"TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL"}
+	DEFAULT_DEPTH = 2
 	recordPool  *sync.Pool
 )
 
@@ -95,27 +96,27 @@ func (l *Logger) SetLayout(layout string) {
 }
 
 func (l *Logger) Trace(fmt string, args ...interface{}) {
-	l.deliverRecordToWriter(TRACE, fmt, args...)
+	l.deliverRecordToWriter(TRACE, DEFAULT_DEPTH, fmt, args...)
 }
 
 func (l *Logger) Debug(fmt string, args ...interface{}) {
-	l.deliverRecordToWriter(DEBUG, fmt, args...)
+	l.deliverRecordToWriter(DEBUG, DEFAULT_DEPTH, fmt, args...)
 }
 
 func (l *Logger) Warn(fmt string, args ...interface{}) {
-	l.deliverRecordToWriter(WARNING, fmt, args...)
+	l.deliverRecordToWriter(WARNING, DEFAULT_DEPTH, fmt, args...)
 }
 
 func (l *Logger) Info(fmt string, args ...interface{}) {
-	l.deliverRecordToWriter(INFO, fmt, args...)
+	l.deliverRecordToWriter(INFO, DEFAULT_DEPTH, fmt, args...)
 }
 
 func (l *Logger) Error(fmt string, args ...interface{}) {
-	l.deliverRecordToWriter(ERROR, fmt, args...)
+	l.deliverRecordToWriter(ERROR, DEFAULT_DEPTH, fmt, args...)
 }
 
 func (l *Logger) Fatal(fmt string, args ...interface{}) {
-	l.deliverRecordToWriter(FATAL, fmt, args...)
+	l.deliverRecordToWriter(FATAL, DEFAULT_DEPTH, fmt, args...)
 }
 
 func (l *Logger) Close() {
@@ -131,7 +132,7 @@ func (l *Logger) Close() {
 	}
 }
 
-func (l *Logger) deliverRecordToWriter(level int, format string, args ...interface{}) {
+func (l *Logger) deliverRecordToWriter(level int, depth int, format string, args ...interface{}) {
 	var inf, code string
 
 	if level < l.level {
@@ -145,7 +146,7 @@ func (l *Logger) deliverRecordToWriter(level int, format string, args ...interfa
 	}
 
 	// source code, file and line num
-	_, file, line, ok := runtime.Caller(2)
+	_, file, line, ok := runtime.Caller(depth)
 	if ok {
 		code = path.Base(file) + ":" + strconv.Itoa(line)
 	}
@@ -244,27 +245,51 @@ func SetLayout(layout string) {
 }
 
 func Trace(fmt string, args ...interface{}) {
-	logger_default.deliverRecordToWriter(TRACE, fmt, args...)
+	logger_default.deliverRecordToWriter(TRACE, DEFAULT_DEPTH, fmt, args...)
+}
+
+func TraceDepth(depth int, fmt string, args ...interface{}) {
+	logger_default.deliverRecordToWriter(TRACE, depth, fmt, args...)
 }
 
 func Debug(fmt string, args ...interface{}) {
-	logger_default.deliverRecordToWriter(DEBUG, fmt, args...)
+	logger_default.deliverRecordToWriter(DEBUG, DEFAULT_DEPTH, fmt, args...)
+}
+
+func DebugDepth(depth int,fmt string, args ...interface{}) {
+	logger_default.deliverRecordToWriter(DEBUG, depth, fmt, args...)
 }
 
 func Warn(fmt string, args ...interface{}) {
-	logger_default.deliverRecordToWriter(WARNING, fmt, args...)
+	logger_default.deliverRecordToWriter(WARNING, DEFAULT_DEPTH, fmt, args...)
+}
+
+func WarnDepth(depth int, fmt string, args ...interface{}) {
+	logger_default.deliverRecordToWriter(WARNING, depth, fmt, args...)
 }
 
 func Info(fmt string, args ...interface{}) {
-	logger_default.deliverRecordToWriter(INFO, fmt, args...)
+	logger_default.deliverRecordToWriter(INFO, DEFAULT_DEPTH, fmt, args...)
+}
+
+func InfoDepth(depth int, fmt string, args ...interface{}) {
+	logger_default.deliverRecordToWriter(INFO, depth, fmt, args...)
 }
 
 func Error(fmt string, args ...interface{}) {
-	logger_default.deliverRecordToWriter(ERROR, fmt, args...)
+	logger_default.deliverRecordToWriter(ERROR, DEFAULT_DEPTH, fmt, args...)
+}
+
+func ErrorDepth(depth int, fmt string, args ...interface{}) {
+	logger_default.deliverRecordToWriter(ERROR, depth, fmt, args...)
 }
 
 func Fatal(fmt string, args ...interface{}) {
-	logger_default.deliverRecordToWriter(FATAL, fmt, args...)
+	logger_default.deliverRecordToWriter(FATAL, DEFAULT_DEPTH, fmt, args...)
+}
+
+func FatalDepth(depth int, fmt string, args ...interface{}) {
+	logger_default.deliverRecordToWriter(FATAL, depth, fmt, args...)
 }
 
 func Register(w Writer) {

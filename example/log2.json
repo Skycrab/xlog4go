@@ -1,0 +1,18 @@
+{
+  "LogLevel" : "trace",
+
+  "FileWriter" : {
+    "On": true,
+
+    "LogPath" : "./log/app.log.info",
+    "RotateLogPath" : "./log/app.log.info.%Y%M%D%H",
+
+    "WfLogPath" : "./log/app.log.wf",
+    "RotateWfLogPath" : "./log/app.log.wf.%Y%M%D%H"
+  },
+
+  "ConsoleWriter" : {
+    "On" : true,
+    "Color" : true
+  }
+}
